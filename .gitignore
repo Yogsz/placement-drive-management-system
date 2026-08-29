@@ -1,0 +1,1 @@
+printf "Campus_Placement_Tracker/src/main/resources/application.properties\ncampus_Placement_Frontend/node_modules/\ncampus_Placement_Frontend/dist/\n" > .gitignore
