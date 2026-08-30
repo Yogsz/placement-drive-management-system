@@ -22,3 +22,14 @@ function Login(){
 }
 
 export default Login;
+
+// function Login() {
+//   return (
+//     <div>
+//       <h1>Login Page</h1>
+//       <p>Login component is working!</p>
+//     </div>
+//   );
+// }
+
+// export default Login;
