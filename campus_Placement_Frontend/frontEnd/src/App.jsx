@@ -6,13 +6,14 @@ import Drives from "./pages/Drives";
 import Applications from "./pages/Applications";
 import Interviews from "./pages/Interviews";
 import Layout from "./components/Layout";
+import Auth from "./pages/Auth";
 
 
 function App(){
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login/>}/>
+        <Route path="/" element={<Auth/>}/>
         <Route element={<Layout/>}>
           <Route path="/dashboard" element={<Dashbhoard/>}/>
           <Route path="/companies" element={<Companies/>} />

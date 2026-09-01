@@ -3,6 +3,7 @@ function Navbar({ toggleSidebar, isSidebarOpen }) {
     <nav className="navbar">
 
       <button
+        type="submit"
         className="sidebar-toggle"
         onClick={toggleSidebar}
       >

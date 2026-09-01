@@ -1,35 +1,61 @@
-import { use, useState } from "react";
+import { useState } from "react";
+import {useNavigate} from "react-router-dom";
 
-function Login(){
+function Login() {
     const [email, setEmail] = useState("");
-    return (<div>
-        <h1>Login</h1>
-        <form>
-            <div>
-                <label>Email</label>
-                <input type="email" value={email} onChange={(e)=>{setEmail(e.target.value)}}/>
-            </div>
-            <div>
-                <label>Password</label>
-                <input type="password" />
-            </div>
-            <p>Your email : {email}</p>
-            <button type="submit" onClick={()=>{setEmail("poda potta")}}>Fill email</button>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+    const [password,setpassword] = useState("");
+    const navigate = useNavigate();
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (email === "") {
+            alert("Please enter your email");
+            return;
+        }
+
+        if (password === "") {
+            alert("Please enter your password");
+            return;
+        }
+
+        console.log("Email:", email);
+        console.log("Password:", password);
+        navigate("/dashboard");
+    };
+
+    return (
+        <div>
+            <h1>Login</h1>
+
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                        }}
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label>Password</label>
+                    <input 
+                    type="password" 
+                    value={password}
+                    onChange={(e)=> setpassword(e.target.value)} 
+                    required/>
+                </div>
+
+
+                <button type="submit">
+                    Login
+                </button>
+            </form>
+        </div>
     );
 }
 
 export default Login;
-
-// function Login() {
-//   return (
-//     <div>
-//       <h1>Login Page</h1>
-//       <p>Login component is working!</p>
-//     </div>
-//   );
-// }
-
-// export default Login;
