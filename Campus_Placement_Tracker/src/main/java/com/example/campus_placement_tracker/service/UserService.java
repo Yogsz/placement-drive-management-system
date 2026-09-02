@@ -230,4 +230,15 @@ public class UserService {
 
         return false;
     }
+
+    public Student getStudentByEmail(String email) {
+
+        UserEntity user = getUserByEmail(email);
+
+        if (user == null) {
+            return null;
+        }
+
+        return user.getStudent();
+    }
 }

@@ -1,6 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Sidebar({ isSidebarOpen }) {
+  const navigate = useNavigate();
+  const handleLogout = () =>{
+    localStorage.removeItem("token");
+    navigate("/");
+  }
 
   return (
     <aside className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
@@ -23,7 +28,7 @@ function Sidebar({ isSidebarOpen }) {
         {isSidebarOpen ? "Interviews" : "▦"}
       </Link>
 
-      <button>
+      <button onClick={handleLogout}>
         {isSidebarOpen ? "Logout" : "↪"}
       </button>
 

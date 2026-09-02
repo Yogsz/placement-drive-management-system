@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import apiRequest from "../services/api";
 
 function Auth() {
   const [mode, setMode] = useState("login");
@@ -12,7 +13,7 @@ function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (email === "") {
@@ -24,11 +25,58 @@ function Auth() {
       alert("Please enter your password");
       return;
     }
+    const response = await fetch("http://localhost:8080/api/auth/login", {
+      method: "Post",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+    const token = await response.text();
+    const role = getRoleFromToken(token);
+    console.log(role);
+    if (token === "Login Failed") {
+      alert("Invalid Email or Password");
+      return;
+    }
+    
+    localStorage.setItem("token", token);
+
+    if(role === "STUDENT"){
+      navigate("/dashboard");
+    }
 
     console.log("Email:", email);
     console.log("Password:", password);
-    navigate("/dashboard");
   };
+
+  const getRoleFromToken = (token) => {
+    const payload = token.split(".")[1];
+    const decodePayLoad = atob(payload);
+    const data = JSON.parse(decodePayLoad);
+
+    return data.role;
+  }
+  const getStudents = async () => {
+    const response = await fetch(
+        "http://localhost:8080/api/students",
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+};
+  
+
 
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
@@ -93,6 +141,7 @@ function Auth() {
             </div>
 
             <button type="submit">Login</button>
+            <button onClick={getStudents}>getStudent</button>
             <button onClick={changeMode} type="button">
               Create Account
             </button>

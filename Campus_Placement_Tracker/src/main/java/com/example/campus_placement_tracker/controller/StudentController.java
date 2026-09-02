@@ -5,6 +5,9 @@ import com.example.campus_placement_tracker.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import com.example.campus_placement_tracker.service.UserService;
 
 import java.util.List;
 
@@ -13,6 +16,9 @@ import java.util.List;
 public class StudentController {
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public List<Student> getAllStudent(){
@@ -37,5 +43,14 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable int id){
         studentService.deleteById(id);
+    }
+
+    @GetMapping("/me")
+    public Student getMyStudent(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        return userService.getStudentByEmail(
+                userDetails.getUsername()
+        );
     }
 }
