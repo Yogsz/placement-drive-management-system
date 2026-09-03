@@ -6,9 +6,11 @@ function Dashboard() {
   useEffect(() => {
     const getStudent = async () => {
       const response = await apiRequest("/api/students/me");
-      const data = await response.json();
+      const data = await response.json(); 
 
       setStudent(data);
+      localStorage.setItem("studentId", data.id)
+      console.log(localStorage.getItem("studentId"));
     };
 
     getStudent();

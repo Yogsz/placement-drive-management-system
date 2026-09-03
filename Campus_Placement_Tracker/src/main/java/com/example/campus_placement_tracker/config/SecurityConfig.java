@@ -3,6 +3,7 @@ package com.example.campus_placement_tracker.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -36,14 +37,21 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
 
         configuration.setAllowedOrigins(
                 List.of("http://localhost:5173")
         );
 
         configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS"
+                )
         );
 
         configuration.setAllowedHeaders(
@@ -53,7 +61,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
 
         return source;
     }
@@ -66,7 +77,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
 
-                .cors(cors -> {})
+                .cors(cors -> cors.configurationSource(
+                        corsConfigurationSource()
+                ))
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -74,59 +87,76 @@ public class SecurityConfig {
                         )
                 )
 
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> {
 
-                        // PUBLIC
-                        .requestMatchers(
-                                "/api/auth/register/student",
-                                "/api/auth/register/company",
-                                "/api/auth/login"
-                        ).permitAll()
+                    // PUBLIC AUTH ENDPOINTS
+                    auth.requestMatchers(
+                            "/api/auth/register/student",
+                            "/api/auth/register/company",
+                            "/api/auth/login"
+                    ).permitAll();
 
+                    auth.requestMatchers(
+                            HttpMethod.GET,
+                            "/api/applications/drive/*/count"
+                    ).permitAll();
 
-                        // DRIVES
-                        .requestMatchers("/api/drives/**")
-                        .hasAnyRole(
-                                "STUDENT",
-                                "COMPANY",
-                                "ADMIN"
-                        )
-
-
-                        // APPLICATIONS
-                        .requestMatchers("/api/applications/**")
-                        .hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
+                    // PUBLIC GET DRIVES
+                    auth.requestMatchers(
+                            HttpMethod.GET,
+                            "/api/drives"
+                    ).permitAll();
 
 
-                        // INTERVIEWS
-                        .requestMatchers("/api/interviews/**")
-                        .hasAnyRole(
-                                "COMPANY",
-                                "ADMIN"
-                        )
+                    // DRIVE OPERATIONS
+                    auth.requestMatchers(
+                            "/api/drives/**"
+                    ).hasAnyRole(
+                            "STUDENT",
+                            "COMPANY",
+                            "ADMIN"
+                    );
 
 
-                        // STUDENTS
-                        .requestMatchers("/api/students/**")
-                        .hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
+                    // APPLICATIONS
+                    auth.requestMatchers(
+                            "/api/applications/**"
+                    ).hasAnyRole(
+                            "STUDENT",
+                            "ADMIN"
+                    );
 
 
-                        // COMPANIES
-                        .requestMatchers("/api/companies/**")
-                        .hasAnyRole(
-                                "COMPANY",
-                                "ADMIN"
-                        )
+                    // INTERVIEWS
+                    auth.requestMatchers(
+                            "/api/interviews/**"
+                    ).hasAnyRole(
+                            "COMPANY",
+                            "ADMIN"
+                    );
 
 
-                        .anyRequest().authenticated()
-                )
+                    // STUDENTS
+                    auth.requestMatchers(
+                            "/api/students/**"
+                    ).hasAnyRole(
+                            "STUDENT",
+                            "ADMIN"
+                    );
+
+
+                    // COMPANIES
+                    auth.requestMatchers(
+                            "/api/companies/**"
+                    ).hasAnyRole(
+                            "COMPANY",
+                            "ADMIN"
+                    );
+
+
+                    // EVERYTHING ELSE
+                    auth.anyRequest().authenticated();
+                })
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,

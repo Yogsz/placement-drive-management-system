@@ -27,12 +27,27 @@ public class ApplicationService {
     public ApplicationEntity createApplication(ApplicationEntity application) {
 
         Student student =
-                studentRepository.findById(application.getStudentId()).orElse(null);
+                studentRepository
+                        .findById(application.getStudentId())
+                        .orElse(null);
 
         PlacementDriveEntity drive =
-                placementDriveRepository.findById(application.getDriveId()).orElse(null);
+                placementDriveRepository
+                        .findById(application.getDriveId())
+                        .orElse(null);
 
         if (student == null || drive == null) {
+            return null;
+        }
+
+        boolean alreadyApplied =
+                applicationRepository
+                        .existsByStudent_IdAndPlacementDrive_DriveId(
+                                student.getId(),
+                                drive.getDriveId()
+                        );
+
+        if (alreadyApplied) {
             return null;
         }
 
@@ -96,5 +111,11 @@ public class ApplicationService {
         }
 
         return false;
+    }
+
+    public long getApplicationCount(int driveId) {
+
+        return applicationRepository
+                .countByPlacementDrive_DriveId(driveId);
     }
 }

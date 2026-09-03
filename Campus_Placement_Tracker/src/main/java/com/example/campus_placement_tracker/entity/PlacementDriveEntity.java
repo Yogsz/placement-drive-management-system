@@ -33,12 +33,20 @@ public class PlacementDriveEntity {
     @NotNull
     private LocalDate driveDate;
 
+    @NotNull
+    private LocalDate applyBefore;
+
     @NotBlank
     private String status;
 
     @Transient
     private int companyId;
 
+    @Transient
+    private String companyName;
+
+
+    // Company ID
 
     public int getCompanyId() {
         return companyId;
@@ -48,9 +56,26 @@ public class PlacementDriveEntity {
         this.companyId = companyId;
     }
 
+
+    // Company Name
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+
+    // Drive ID
+
     public int getDriveId() {
         return driveId;
     }
+
+
+    // Company
 
     public CompanyEntity getCompany() {
         return company;
@@ -60,6 +85,9 @@ public class PlacementDriveEntity {
         this.company = company;
     }
 
+
+    // Job Role
+
     public String getJobRole() {
         return jobRole;
     }
@@ -67,6 +95,9 @@ public class PlacementDriveEntity {
     public void setJobRole(String jobRole) {
         this.jobRole = jobRole;
     }
+
+
+    // Salary Package
 
     public float getSalaryPackage() {
         return salaryPackage;
@@ -76,6 +107,9 @@ public class PlacementDriveEntity {
         this.salaryPackage = salaryPackage;
     }
 
+
+    // Eligibility
+
     public String getEligibility() {
         return eligibility;
     }
@@ -84,6 +118,9 @@ public class PlacementDriveEntity {
         this.eligibility = eligibility;
     }
 
+
+    // Drive Date
+
     public LocalDate getDriveDate() {
         return driveDate;
     }
@@ -91,6 +128,20 @@ public class PlacementDriveEntity {
     public void setDriveDate(LocalDate driveDate) {
         this.driveDate = driveDate;
     }
+
+
+    // Apply Before
+
+    public LocalDate getApplyBefore() {
+        return applyBefore;
+    }
+
+    public void setApplyBefore(LocalDate applyBefore) {
+        this.applyBefore = applyBefore;
+    }
+
+
+    // Status
 
     public String getStatus() {
         return status;

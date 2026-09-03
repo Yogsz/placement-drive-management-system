@@ -60,4 +60,12 @@ public class ApplicationController {
 
         return "Application not found";
     }
+
+    @GetMapping("/drive/{driveId}/count")
+    public long getApplicationCount(
+            @PathVariable int driveId) {
+
+        return applicationService
+                .getApplicationCount(driveId);
+    }
 }

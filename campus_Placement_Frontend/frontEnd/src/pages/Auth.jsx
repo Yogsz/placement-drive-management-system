@@ -36,12 +36,15 @@ function Auth() {
       }),
     });
     const token = await response.text();
-    const role = getRoleFromToken(token);
-    console.log(role);
+    console.log(token);
     if (token === "Login Failed") {
       alert("Invalid Email or Password");
       return;
     }
+    const role = getRoleFromToken(token);
+    
+    console.log(role);
+    
     
     localStorage.setItem("token", token);
 
@@ -60,22 +63,7 @@ function Auth() {
 
     return data.role;
   }
-  const getStudents = async () => {
-    const response = await fetch(
-        "http://localhost:8080/api/students",
-        {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("token")}`
-            }
-        }
-    );
 
-    const data = await response.json();
-
-    console.log(data);
-};
-  
 
 
   const [studentName, setStudentName] = useState("");
@@ -141,7 +129,7 @@ function Auth() {
             </div>
 
             <button type="submit">Login</button>
-            <button onClick={getStudents}>getStudent</button>
+            {/* <button onClick={getStudents}>getStudent</button> */}
             <button onClick={changeMode} type="button">
               Create Account
             </button>

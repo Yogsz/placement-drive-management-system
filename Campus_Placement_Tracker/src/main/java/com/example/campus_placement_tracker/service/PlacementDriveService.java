@@ -50,6 +50,10 @@ public class PlacementDriveService {
                 drive.setCompanyId(
                         drive.getCompany().getCompanyId()
                 );
+
+                drive.setCompanyName(
+                        drive.getCompany().getCompanyName()
+                );
             }
         }
 
@@ -67,7 +71,13 @@ public class PlacementDriveService {
 
         if (drive != null && drive.getCompany() != null) {
 
-            drive.setCompanyId(drive.getCompany().getCompanyId());
+            drive.setCompanyId(
+                    drive.getCompany().getCompanyId()
+            );
+
+            drive.setCompanyName(
+                    drive.getCompany().getCompanyName()
+            );
         }
 
         return drive;
@@ -98,19 +108,28 @@ public class PlacementDriveService {
             existingDrive.setCompany(company);
 
             existingDrive.setJobRole(
-                    drive.getJobRole());
+                    drive.getJobRole()
+            );
 
             existingDrive.setSalaryPackage(
-                    drive.getSalaryPackage());
+                    drive.getSalaryPackage()
+            );
 
             existingDrive.setEligibility(
-                    drive.getEligibility());
+                    drive.getEligibility()
+            );
 
             existingDrive.setDriveDate(
-                    drive.getDriveDate());
+                    drive.getDriveDate()
+            );
+
+            existingDrive.setApplyBefore(
+                    drive.getApplyBefore()
+            );
 
             existingDrive.setStatus(
-                    drive.getStatus());
+                    drive.getStatus()
+            );
 
             return placementDriveRepository.save(existingDrive);
         }
@@ -118,6 +137,8 @@ public class PlacementDriveService {
         return null;
     }
 
+
+    // DELETE
     public boolean deleteDrive(int driveId) {
 
         if (placementDriveRepository.existsById(driveId)) {
