@@ -31,7 +31,7 @@ function Drives() {
   const getApplicationCount = async (driveId) => {
     try {
       const response = await apiRequest(
-        `/api/applications/drive/${driveId}/count`
+        `/api/applications/drive/${driveId}/count`,
       );
 
       if (!response.ok) {
@@ -47,39 +47,44 @@ function Drives() {
   };
 
   const applyForDrive = async () => {
-    try{
-        const studentId = localStorage.getItem("studentId");
-        if(!studentId){
-            alert("Student ID not Found");
-            return;
-        }
-        const resopose = await apiRequest("/api/applications",{
-            method: "POST",
-            body: JSON.stringify({
-                studentId: Number(studentId),
-                driveId: selectedDrive.driveId,
-                status:"APPLIED"
-            })
-        });
-        if(!resopose.ok){
-            throw new Error(resopose.status);
-        }
-        alert("Appication Submitted successFully");
-        setApplicationCount((count)=>count+1);
-    }catch(error){
-        console.log(error);
-        alert("Failed to apply for this drive");
+    try {
+      const studentId = localStorage.getItem("studentId");
+      if (!studentId) {
+        alert("Student ID not Found");
+        return;
+      }
+      const response = await apiRequest("/api/applications", {
+        method: "POST",
+        body: JSON.stringify({
+          studentId: Number(studentId),
+          driveId: selectedDrive.driveId,
+          status: "APPLIED",
+        }),
+      });
+
+      if (response.status === 403 || response.status === 409) {
+        // const message = await response.text();
+        alert("You've already apply for this company");
+        return;
+      }
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      alert("Appication Submitted successFully");
+      getApplicationCount(selectedDrive.driveId);
+    } catch (error) {
+      
+      console.log(error);
+      alert("Failed to apply for this drive");
     }
-  }
+  };
 
   return (
     <div className="drives-page">
-
       <h1>Placement Drives</h1>
 
       <div className="drives-table-wrapper">
         <table className="drives-table">
-
           <thead>
             <tr>
               <th>Company</th>
@@ -102,30 +107,19 @@ function Drives() {
                   getApplicationCount(drive.driveId);
                 }}
               >
-
                 <td className="title-column">
                   <strong>{drive.companyName}</strong>
                 </td>
 
-                <td>
-                  {drive.jobRole}
-                </td>
+                <td>{drive.jobRole}</td>
 
-                <td>
-                  {drive.salaryPackage} LPA
-                </td>
+                <td>{drive.salaryPackage} LPA</td>
 
-                <td>
-                  {drive.eligibility}
-                </td>
+                <td>{drive.eligibility}</td>
 
-                <td>
-                  {drive.applyBefore}
-                </td>
+                <td>{drive.applyBefore}</td>
 
-                <td>
-                  {drive.driveDate}
-                </td>
+                <td>{drive.driveDate}</td>
 
                 <td>
                   <span className="status-badge">
@@ -133,11 +127,9 @@ function Drives() {
                     {drive.status}
                   </span>
                 </td>
-
               </tr>
             ))}
           </tbody>
-
         </table>
       </div>
 
@@ -145,9 +137,7 @@ function Drives() {
 
       {selectedDrive && (
         <div className="details-overlay">
-
           <div className="drive-details">
-
             {/* CLOSE BUTTON */}
 
             <button
@@ -162,88 +152,57 @@ function Drives() {
 
             {/* COMPANY */}
 
-            <h2>
-              {selectedDrive.companyName}
-            </h2>
+            <h2>{selectedDrive.companyName}</h2>
 
             {/* JOB ROLE */}
 
-            <p className="details-role">
-              {selectedDrive.jobRole}
-            </p>
+            <p className="details-role">{selectedDrive.jobRole}</p>
 
             {/* DRIVE DETAILS */}
 
             <div className="details-grid">
-
               <div>
                 <span>Salary Package</span>
-                <strong>
-                  {selectedDrive.salaryPackage} LPA
-                </strong>
+                <strong>{selectedDrive.salaryPackage} LPA</strong>
               </div>
 
               <div>
                 <span>Eligibility</span>
-                <strong>
-                  {selectedDrive.eligibility}
-                </strong>
+                <strong>{selectedDrive.eligibility}</strong>
               </div>
 
               <div>
                 <span>Apply Before</span>
-                <strong>
-                  {selectedDrive.applyBefore}
-                </strong>
+                <strong>{selectedDrive.applyBefore}</strong>
               </div>
 
               <div>
                 <span>Drive Date</span>
-                <strong>
-                  {selectedDrive.driveDate}
-                </strong>
+                <strong>{selectedDrive.driveDate}</strong>
               </div>
 
               <div>
                 <span>Status</span>
-                <strong>
-                  {selectedDrive.status}
-                </strong>
+                <strong>{selectedDrive.status}</strong>
               </div>
-
             </div>
 
             {/* APPLICATION COUNT */}
 
             <div className="stat-box">
+              <span>Students Applied</span>
 
-              <span>
-                Students Applied
-              </span>
-
-              <strong>
-                {applicationCount}
-              </strong>
-
+              <strong>{applicationCount}</strong>
             </div>
-
 
             <div className="details-footer">
-
-              <button
-                className="apply-button"
-                onClick={applyForDrive}
-              >
+              <button className="apply-button" onClick={applyForDrive}>
                 Apply Now
               </button>
-
             </div>
-
           </div>
-
         </div>
       )}
-
     </div>
   );
 }

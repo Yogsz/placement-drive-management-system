@@ -146,14 +146,19 @@ public class SecurityConfig {
 
 
                     // COMPANIES
+                    // PUBLIC COMPANY LIST
+                    auth.requestMatchers(
+                            HttpMethod.GET,
+                            "/api/companies"
+                    ).permitAll();
+
+                    // COMPANY OPERATIONS
                     auth.requestMatchers(
                             "/api/companies/**"
                     ).hasAnyRole(
                             "COMPANY",
                             "ADMIN"
                     );
-
-
                     // EVERYTHING ELSE
                     auth.anyRequest().authenticated();
                 })
